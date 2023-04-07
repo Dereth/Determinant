@@ -11,11 +11,8 @@ public abstract class DetObject
     public const int jitterMax = 5;
 
     // Static List
-    public static List<DetObject> objects = new List<DetObject>();
+    public static List<DetObjectHoldable> objects = new List<DetObjectHoldable>();
     public static int numObjects = 0;
-
-    // Corresponding GameObject
-    public GameObject gameObj { get; private set; }
 
     // Properties
     public DetProps props { get; private set; }
@@ -50,7 +47,7 @@ public abstract class DetObject
     private float ycos;
     private float zcos;
 
-    public static void addObject(DetObject obj)
+    public static void addObject(DetObjectHoldable obj)
     {
         if (numObjects < MAX_OBJECTS)
         {
@@ -67,19 +64,19 @@ public abstract class DetObject
     public DetObject(DetProps props)
     {
         this.props = props;
-        gameObj = new GameObject(props.createName());
-        gameObj.AddComponent<MeshRenderer>().material = props.getRenderMaterial();
-        gameObj.AddComponent<DetGameObject>().detObject = this;
-        if (!(props is DetGroundProps))
+        if (this is DetObjectHoldable)
         {
-            addObject(this);
+            addObject((DetObjectHoldable) this);
         }
     }
 
     public void modifyMaterial(int material)
     {
         props.material = material;
-        gameObj.GetComponent<Renderer>().material = props.getRenderMaterial();
+        if (this is DetObjectRendered)
+        {
+            ((DetObjectRendered) this).gameObj.GetComponent<Renderer>().material = props.getRenderMaterial();
+        }
     }
 
     public void modifyMass(float mass)
@@ -127,6 +124,21 @@ public abstract class DetObject
     {
         props.angleVel = angleVel * DetMath.DEG_TO_RAD;
         ang = props.angleVel;
+        moi = getMoI(ang);
+        angleMom = moi * ang;
+    }
+
+    public void setVel(Vector3 velocity)
+    {
+        vel = velocity;
+        momentum = props.mass * velocity;
+        updateEnergies();
+    }
+
+    public void setAng(Vector3 angleVel)
+    {
+        ang = angleVel;
+        cacheTrig();
         moi = getMoI(ang);
         angleMom = moi * ang;
     }
@@ -179,7 +191,7 @@ public abstract class DetObject
 
         float curKE = getKEnergy();
         float curPE = getPEnergy();
-        if (!props.unstoppable && curKE + curPE > kE + pE)
+        if (!isUnstoppable() && curKE + curPE > kE + pE)
         {
             Vector3 newPos = pos;
             newPos.y = Mathf.Min(pos.y, maxHeight);
@@ -197,6 +209,11 @@ public abstract class DetObject
             kE = curKE;
             pE = curPE;
         }
+    }
+
+    public virtual bool isUnstoppable()
+    {
+        return props.unstoppable;
     }
 
     public float getKEnergy()
@@ -301,14 +318,14 @@ public abstract class DetObject
 
         // Stores the "main" object (the one that is not unstoppable)
         // or keeps as null if both are not unstoppable
-        if (coll.obj1.props.unstoppable)
+        if (coll.obj1.isUnstoppable())
         {
             mainObj = coll.obj2;
             mainPoint = coll.point2;
             mainDir = -coll.direction;
             otherObj = coll.obj1;
         }
-        else if (coll.obj2.props.unstoppable)
+        else if (coll.obj2.isUnstoppable())
         {
             mainObj = coll.obj1;
             mainPoint = coll.point1;
@@ -446,7 +463,7 @@ public abstract class DetObject
 
     public bool shouldCollide(DetObject obj)
     {
-        if (props.unstoppable && obj.props.unstoppable)
+        if (isUnstoppable() && obj.isUnstoppable())
         {
             return false;
         }

@@ -1,46 +1,86 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
-public class DetSphere : DetObjectHoldable
+public class DetHand : DetObjectRendered
 {
 
-    public float r;
-    private float momentOfInertia;
+    public const float RADIUS = 0.25F;
 
-    public DetSphere(DetSphereProps props) : base(props)
+    public bool holding { get; private set; }
+    public List<DetObjectHoldable> heldObjects;
+
+    public DetHand(DetHandProps props) : base(props)
     {
-        r = props.radius;
+        heldObjects = new List<DetObjectHoldable>();
+        holding = false;
 
-        setScale();
+        gameObj.transform.localScale = new Vector3(RADIUS, RADIUS, RADIUS);
         gameObj.AddComponent<MeshFilter>().mesh = Determinant.sphereMesh;
     }
 
-    public void modifyRadius(float radius)
+    public void updateHolding(float dt)
     {
-        if (radius <= 0)
-        {
-            throw new Exception("radius must be greater than 0");
-        }
-        DetSphereProps sphereProps = (DetSphereProps) props;
-        sphereProps.radius = radius;
-        r = sphereProps.radius;
-        setScale();
-        momentOfInertia = props.mass * r * r * 2 / 5;
-    }
+        bool rightHand = ((DetHandProps) props).isRightHand();
+        bool readHolding = rightHand ? VRPositioning.rightHeld() : VRPositioning.leftHeld();
+        Vector3 readPos = rightHand ? VRPositioning.rightPos() : VRPositioning.leftPos();
+        Quaternion readRot = rightHand ? VRPositioning.rightRot() : VRPositioning.leftRot();
 
-    public void setScale()
-    {
-        float scale = r * 2;
-        gameObj.transform.localScale = new Vector3(scale, scale, scale);
+        if (readHolding)
+        {
+            if (!holding)
+            {
+                foreach (DetObject obj in DetObject.objects)
+                {
+                    if (obj is DetObjectHoldable && getCollision(obj) != null)
+                    {
+                        DetObjectHoldable heldObj = (DetObjectHoldable) obj;
+                        heldObjects.Add(heldObj);
+                        heldObj.hand = this;
+                    }
+                }
+                holding = true;
+            }
+
+            // Grabs changes in position;
+            Vector3 newVel = (readPos - pos) / dt;
+            Quaternion deltaRot = (readRot * Quaternion.Inverse(rot));
+
+            // Calculates angular momentum
+            float magnitude = 0.0F;
+            Vector3 axis = Vector3.zero;
+            deltaRot.ToAngleAxis(out magnitude, out axis);
+            magnitude /= dt;
+            Vector3 newAng = axis.normalized * magnitude;
+
+            // Sets values
+            setVel(newVel);
+            setAng(newAng);
+
+            // Calculates and sets values for held objects
+            foreach (DetObjectHoldable obj in heldObjects)
+            {
+                Vector3 dist = obj.pos - pos;
+                obj.setVel(getVelAtPoint(dist));
+                obj.setAng(newAng);
+            }
+
+        }
+        else if (holding)
+        {
+            foreach (DetObjectHoldable obj in heldObjects)
+            {
+                obj.hand = null;
+            }
+            heldObjects.Clear();
+            holding = false;
+        }
+
+
     }
 
     public override void resetValues()
     {
-        DetSphereProps sphereProps = (DetSphereProps) props;
-        r = sphereProps.radius;
-        momentOfInertia = props.mass * r * r * 2 / 5;
         base.resetValues();
     }
 
@@ -56,12 +96,12 @@ public class DetSphere : DetObjectHoldable
 
     public override float getMoI(Vector3 vel)
     {
-        return vel.sqrMagnitude > 0 ? momentOfInertia : 0;
+        return 0;
     }
 
     public override float getCollisionRadius()
     {
-        return r;
+        return holding ? RADIUS : 0;
     }
 
     public override DetCollision getCollision(DetObject obj)
@@ -72,7 +112,7 @@ public class DetSphere : DetObjectHoldable
             Vector3 disp = rect.alignVect(pos - rect.pos);
 
             Vector3 dist = new Vector3(0, 0, 0);
-            
+
             // In case sphere center is inside rectangle
             float bestDepth = float.MaxValue;
             int bestInvert = 0;
@@ -90,7 +130,7 @@ public class DetSphere : DetObjectHoldable
                 }
                 else
                 {
-                    float curDepth = edge - d + r;
+                    float curDepth = edge - d + RADIUS;
                     if (curDepth < bestDepth)
                     {
                         bestDepth = curDepth;
@@ -113,55 +153,55 @@ public class DetSphere : DetObjectHoldable
                 direction[bestAxis] = bestInvert;
                 direction = rect.disalignVect(direction);
                 point1 = new Vector3(0, 0, 0);
-                point1[bestAxis] = -r * bestInvert;
+                point1[bestAxis] = -RADIUS * bestInvert;
                 point1 = rect.disalignVect(point1);
                 point2 = dist;
                 point2[bestAxis] = bestInvert * rect.getDimension(bestAxis) / 2;
                 point2 = rect.disalignVect(point2);
             }
-            else if (dMag > r)
+            else if (dMag > RADIUS)
             {
                 return null;
             }
             else
             {
-                depth = r - dMag;
+                depth = RADIUS - dMag;
                 direction = rect.disalignVect(-dist.normalized);
-                point1 = -r * direction;
+                point1 = -RADIUS * direction;
                 point2 = rect.disalignVect(disp + dist);
 
             }
 
             return new DetCollision(depth, this, rect, point1, point2, direction);
-            
+
 
         }
         else if (obj is DetSphere)
         {
-            DetSphere sphere = (DetSphere) obj;
+            DetSphere sphere = (DetSphere)obj;
             Vector3 disp = pos - sphere.pos;
             float diff = disp.magnitude;
 
-            if (diff <= (r + sphere.r))
+            if (diff <= (RADIUS + sphere.r))
             {
                 float depth;
                 Vector3 direction;
                 Vector3 point1;
                 Vector3 point2;
-                
+
                 if (diff == 0)
                 {
                     // Default to downward collision
-                    depth = (r + sphere.r) / 2;
+                    depth = (RADIUS + sphere.r) / 2;
                     direction = new Vector3(0, -1, 0);
-                    point1 = new Vector3(0, -r, 0);
+                    point1 = new Vector3(0, -RADIUS, 0);
                     point2 = new Vector3(0, sphere.r, 0);
                 }
                 else
                 {
-                    depth = r + sphere.r - diff;
+                    depth = RADIUS + sphere.r - diff;
                     direction = disp / diff;
-                    point1 = -direction * r;
+                    point1 = -direction * RADIUS;
                     point2 = direction * sphere.r;
                 }
 
@@ -171,29 +211,58 @@ public class DetSphere : DetObjectHoldable
 
         return null;
     }
-
 }
 
-public class DetSphereProps : DetProps
+public abstract class DetHandProps : DetProps
 {
-    private static int index = 0;
-    public float radius;
 
-    public DetSphereProps() : base()
+    public DetHandProps() : base()
     {
-        radius = 1;
     }
 
     public override DetObject createObject()
     {
-        return new DetSphere(this);
+        return new DetHand(this);
+    }
+
+    public abstract bool isRightHand();
+
+}
+
+public class DetRightHandProps : DetHandProps
+{
+
+    public DetRightHandProps() : base()
+    {
+    }
+
+    public override bool isRightHand()
+    {
+        return true;
     }
 
     public override string createName()
     {
-        string name = "Sphere" + index;
-        index++;
-        return name;
+        return "RightHand";
+    }
+
+}
+
+public class DetLeftHandProps : DetHandProps
+{
+
+    public DetLeftHandProps() : base()
+    {
+    }
+
+    public override bool isRightHand()
+    {
+        return false;
+    }
+
+    public override string createName()
+    {
+        return "LeftHand";
     }
 
 }

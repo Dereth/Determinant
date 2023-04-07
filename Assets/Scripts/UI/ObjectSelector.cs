@@ -29,7 +29,7 @@ public class ObjectSelector : MonoBehaviour
         options.Add("Select Object");
         options.Add("Global");
 
-        foreach (DetObject obj in DetObject.objects)
+        foreach (DetObjectHoldable obj in DetObject.objects)
         {
             options.Add(obj.gameObj.name);
         }
@@ -46,7 +46,7 @@ public class ObjectSelector : MonoBehaviour
 
             if (index == 1)
             {
-                DetEvents.setSelected(DetGround.Instance);
+                DetEvents.setSelected(Determinant.ground);
                 return;
             }
 

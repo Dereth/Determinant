@@ -23,8 +23,12 @@ public class DeleteButton : MonoBehaviour
     {
         if (DetEvents.isNormalObject())
         {
-            DetObject.objects.Remove(DetEvents.selected);
-            Destroy(DetEvents.selected.gameObj);
+            if (DetEvents.selected is DetObjectHoldable)
+            {
+                DetObjectHoldable obj = (DetObjectHoldable) DetEvents.selected;
+                DetObject.objects.Remove(obj);
+                Destroy(obj.gameObj);
+            }
             DetEvents.setSelected(null);
             ObjectSelector.refreshOptions();
         }

@@ -4,17 +4,23 @@ using UnityEngine;
 
 public class Determinant : MonoBehaviour
 {
+    public static Mesh rectMesh;
     public static Mesh sphereMesh;
+
     public static bool running = false;
     public static bool usingCamera = false;
     public static bool canModify = true;
 
+    public static DetHand rightHand;
+    public static DetHand leftHand;
+    public static DetGround ground;
+
     public static Determinant Instance { get; private set; }
 
     private GameObject world;
-    private bool spacePressed = false;
-    private bool rPressed = false;
-    private bool rightClicking = false;
+    public bool spacePressed = false;
+    public bool rPressed = false;
+    public bool rightClicking = false;
 
     public static float gravity = 9.81F;
 
@@ -31,11 +37,19 @@ public class Determinant : MonoBehaviour
             GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             sphereMesh = sphere.GetComponent<MeshFilter>().mesh;
             Destroy(sphere);
+            GameObject rect = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            rectMesh = rect.GetComponent<MeshFilter>().mesh;
+            Destroy(rect);
 
             running = false;
 
-            DetGroundProps pr = new DetGroundProps();
-            pr.createObject();
+            DetProps rightHandProps = new DetRightHandProps();
+            DetProps leftHandProps = new DetLeftHandProps();
+            DetGroundProps groundProps = new DetGroundProps();
+
+            rightHand = (DetHand) rightHandProps.createObject();
+            leftHand = (DetHand) leftHandProps.createObject();
+            ground = (DetGround) groundProps.createObject();
 
         }
     }
@@ -111,14 +125,14 @@ public class Determinant : MonoBehaviour
     public void pause()
     {
         Destroy(world);
-        Paused.Instance.SetActive(true);
+        Paused.Instance.SetActive(true); // Allowed to modify
     }
 
     public void unpause()
     {
         world = new GameObject("DetWorld");
         world.AddComponent<DetWorld>();
-        Paused.Instance.SetActive(false);
+        Paused.Instance.SetActive(false); // Allowed to modify
     }
 
     public static void resetObjects()
@@ -129,8 +143,4 @@ public class Determinant : MonoBehaviour
         }
     }
 
-    public void test()
-    {
-
-    }
 }

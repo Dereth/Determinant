@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class DetRect : DetObject
+public class DetRect : DetObjectHoldable
 {
 	private const int XAXIS = 0;
 	private const int YAXIS = 1;
@@ -25,21 +25,6 @@ public class DetRect : DetObject
 		(6, 7)
 	};
 
-	private static int[] triangles = new int[] {
-            0, 2, 1,
-            0, 3, 2,
-            2, 3, 4,
-            2, 4, 5,
-            1, 2, 5,
-            1, 5, 6,
-            0, 7, 4,
-            0, 4, 3,
-            5, 4, 7,
-            5, 7, 6,
-            0, 6, 7,
-            0, 1, 6
-        };
-
     public Vector3[] vertices { get; private set; }
 	public Vector3[] rotated { get; private set; }
 
@@ -60,9 +45,9 @@ public class DetRect : DetObject
 
 		calcDimensions();
 
-		Mesh mesh = createMesh();
-		gameObj.AddComponent<MeshFilter>().mesh = mesh;
-	}
+        gameObj.AddComponent<MeshFilter>().mesh = Determinant.rectMesh;
+        setScale();
+    }
 
 	public void modifyLength(float length)
     {
@@ -74,7 +59,8 @@ public class DetRect : DetObject
         rectProps.length = length;
 		l = rectProps.length;
 		calcDimensions();
-        gameObj.GetComponent<MeshFilter>().mesh = createMesh();
+        setScale();
+        //gameObj.GetComponent<MeshFilter>().mesh = createMesh();
     }
 
     public void modifyWidth(float width)
@@ -87,7 +73,8 @@ public class DetRect : DetObject
         rectProps.width = width;
         w = rectProps.width;
         calcDimensions();
-        gameObj.GetComponent<MeshFilter>().mesh = createMesh();
+        setScale();
+        //gameObj.GetComponent<MeshFilter>().mesh = createMesh();
     }
 
     public void modifyHeight(float height)
@@ -100,7 +87,8 @@ public class DetRect : DetObject
         rectProps.height = height;
         h = rectProps.height;
         calcDimensions();
-        gameObj.GetComponent<MeshFilter>().mesh = createMesh();
+        setScale();
+        //gameObj.GetComponent<MeshFilter>().mesh = createMesh();
     }
 
 	private void calcDimensions()
@@ -130,13 +118,9 @@ public class DetRect : DetObject
 		};
     }
 
-	private Mesh createMesh()
-	{
-		Mesh mesh = new Mesh();
-		mesh.vertices = this.vertices;
-		mesh.triangles = triangles;
-		mesh.Optimize();
-		return mesh;
+    public void setScale()
+    {
+        gameObj.transform.localScale = new Vector3(l, h, w);
     }
 
     public void calcHitbox()
@@ -161,7 +145,8 @@ public class DetRect : DetObject
         w = rectProps.width;
         h = rectProps.height;
         calcDimensions();
-        gameObj.GetComponent<MeshFilter>().mesh = createMesh();
+        setScale();
+        //gameObj.GetComponent<MeshFilter>().mesh = createMesh();
         base.resetValues();
     }
 

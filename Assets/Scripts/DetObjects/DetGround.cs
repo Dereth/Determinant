@@ -6,28 +6,8 @@ public class DetGround : DetObject
 {
     public const float size = 10000F;
 
-    public static DetGround Instance { get; private set; }
-
     public DetGround(DetGroundProps props) : base(props)
     {
-        Instance = this;
-
-        Mesh mesh = new Mesh();
-        float d = size / 2;
-        mesh.vertices = new Vector3[]
-        {
-            new Vector3(-d, 0, -d),
-            new Vector3(-d, 0, d),
-            new Vector3(d, 0, d),
-            new Vector3(d, 0, -d)
-        };
-        mesh.triangles = new int[]
-        {
-            0, 1, 3,
-            2, 3, 1
-        };
-        mesh.Optimize();
-        gameObj.AddComponent<MeshFilter>().mesh = mesh;
     }
 
     public override void resetValues()

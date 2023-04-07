@@ -5,9 +5,7 @@ using UnityEngine;
 public class DetWorld : MonoBehaviour
 {
 
-    public static Mesh sphereMesh;
-
-    private DetObject[] objects;
+    public DetObjectHoldable[] objects;
 
     void Start()
     {
@@ -17,16 +15,20 @@ public class DetWorld : MonoBehaviour
     void FixedUpdate()
     {
 
+        DetCollision collision;
         float dt = Time.deltaTime;
 
         foreach(DetObject obj in objects)
         {
             obj.preTick();
-            if (!obj.props.unstoppable)
+            if (!obj.isUnstoppable())
             {
                 obj.applyHalfGravity(dt);
             }
         }
+
+        Determinant.rightHand.updateHolding(dt);
+        Determinant.leftHand.updateHolding(dt);
 
         for (int i = 0; i < objects.Length; i++)
         {
@@ -37,7 +39,7 @@ public class DetWorld : MonoBehaviour
                 DetObject other = objects[j];
                 if (obj.shouldCollide(other))
                 {
-                    DetCollision collision = obj.getCollision(other);
+                    collision = obj.getCollision(other);
                     if (collision != null)
                     {
                         DetObject.resolveCollision(collision, dt);
@@ -46,12 +48,35 @@ public class DetWorld : MonoBehaviour
             }
         }
 
-        foreach(DetObject obj in objects)
+        foreach(DetObjectHoldable obj in objects)
         {
-            if (!obj.props.unstoppable)
+            if (!obj.isUnstoppable())
             {
+                // Right Hand Collision
+                if (Determinant.rightHand.holding)
+                {
+                    collision = Determinant.rightHand.getCollision(obj);
+                    if (collision != null)
+                    {
+                        DetObject.resolveCollision(collision, dt);
+                    }
+                }
+
+                // Left Hand Collision
+                if (Determinant.leftHand.holding)
+                {
+                    collision = Determinant.leftHand.getCollision(obj);
+                    if (collision != null)
+                    {
+                        DetObject.resolveCollision(collision, dt);
+                    }
+                }
+
+                // Final Gravity Application
                 obj.applyHalfGravity(dt);
-                DetCollision collision = DetGround.Instance.getCollision(obj);
+
+                // Ground Collision
+                collision = Determinant.ground.getCollision(obj);
                 if (collision != null)
                 {
                     DetObject.resolveCollision(collision, dt);

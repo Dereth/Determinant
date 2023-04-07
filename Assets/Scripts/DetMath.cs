@@ -55,3 +55,37 @@ public class Line
         this.point2 = point2;
     }
 }
+
+public class VRPositioning
+{
+
+    public static bool rightHeld()
+    {
+        return false;
+    }
+
+    public static bool leftHeld()
+    {
+        return false;
+    }
+
+    public static Vector3 rightPos()
+    {
+        return new Vector3(0, 0, 0);
+    }
+
+    public static Vector3 leftPos()
+    {
+        return new Vector3(0, 0, 0);
+    }
+
+    public static Quaternion rightRot()
+    {
+        return Quaternion.identity;
+    }
+
+    public static Quaternion leftRot()
+    {
+        return Quaternion.identity;
+    }
+}
