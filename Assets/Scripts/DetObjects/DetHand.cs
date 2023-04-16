@@ -6,6 +6,8 @@ public class DetHand : DetObjectRendered
 {
 
     public const float RADIUS = 0.25F;
+    public static Material holdingMat = Resources.Load("Ground_Mat", typeof(Material)) as Material;
+    public static Material notHoldingMat = Resources.Load("Stud_Mat", typeof(Material)) as Material;
 
     public bool holding { get; private set; }
     public List<DetObjectHoldable> heldObjects;
@@ -15,10 +17,13 @@ public class DetHand : DetObjectRendered
         heldObjects = new List<DetObjectHoldable>();
         holding = false;
 
+        // Create renderer
         gameObj.transform.localScale = new Vector3(RADIUS, RADIUS, RADIUS);
         gameObj.AddComponent<MeshFilter>().mesh = Determinant.sphereMesh;
+        gameObj.GetComponent<Renderer>().material = notHoldingMat;
     }
 
+    // Updates position and status of hands
     public void updateHolding(float dt)
     {
         bool rightHand = ((DetHandProps) props).isRightHand();
@@ -30,6 +35,8 @@ public class DetHand : DetObjectRendered
         {
             if (!holding)
             {
+                gameObj.GetComponent<Renderer>().material = holdingMat;
+
                 foreach (DetObject obj in DetObject.objects)
                 {
                     if (obj is DetObjectHoldable && getCollision(obj) != null)
@@ -68,6 +75,10 @@ public class DetHand : DetObjectRendered
         }
         else if (holding)
         {
+            // Sets material to not holding
+            gameObj.GetComponent<Renderer>().material = notHoldingMat;
+
+            // Clears Held Objects
             foreach (DetObjectHoldable obj in heldObjects)
             {
                 obj.hand = null;
@@ -76,22 +87,6 @@ public class DetHand : DetObjectRendered
             holding = false;
         }
 
-
-    }
-
-    public override void resetValues()
-    {
-        base.resetValues();
-    }
-
-    public override void preTick()
-    {
-        base.preTick();
-    }
-
-    public override void tick(float dt)
-    {
-        base.tick(dt);
     }
 
     public override float getMoI(Vector3 vel)
@@ -99,9 +94,10 @@ public class DetHand : DetObjectRendered
         return 0;
     }
 
+    // Colllision Logic
     public override float getCollisionRadius()
     {
-        return holding ? RADIUS : 0;
+        return RADIUS;
     }
 
     public override DetCollision getCollision(DetObject obj)

@@ -61,12 +61,12 @@ public class VRPositioning
 
     public static bool rightHeld()
     {
-        return false;
+        return Input.GetKey(KeyCode.U);
     }
 
     public static bool leftHeld()
     {
-        return false;
+        return Input.GetKey(KeyCode.I);
     }
 
     public static Vector3 rightPos()

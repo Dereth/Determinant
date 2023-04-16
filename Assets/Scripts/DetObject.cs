@@ -36,10 +36,11 @@ public abstract class DetObject
     // Displace object at end of each tick
     public Vector3 collDisp { get; private set; }
 
+    // Anti-jittering
     public int jitterCount = 0;
-    public Quaternion inverseRot { get; private set; }
 
     // Trig Optimizations
+    public Quaternion inverseRot { get; private set; }
     private float xsin;
     private float ysin;
     private float zsin;
@@ -47,6 +48,7 @@ public abstract class DetObject
     private float ycos;
     private float zcos;
 
+    // Controls adding objects to list
     public static void addObject(DetObjectHoldable obj)
     {
         if (numObjects < MAX_OBJECTS)
@@ -58,9 +60,14 @@ public abstract class DetObject
 
     public static void removeObject(DetObject obj)
     {
-
+        if (objects.Contains(obj))
+        {
+            numObjects--;
+            objects.Remove(obj);
+        }
     }
 
+    // Create object with properties
     public DetObject(DetProps props)
     {
         this.props = props;
@@ -69,6 +76,12 @@ public abstract class DetObject
             addObject((DetObjectHoldable) this);
         }
     }
+
+    /*
+     * Modification Functions:
+     * 
+     * Changes properties of object. DO NOT USE WHILE RUNNING!
+     */
 
     public void modifyMaterial(int material)
     {
@@ -128,6 +141,12 @@ public abstract class DetObject
         angleMom = moi * ang;
     }
 
+    /*
+     * Setter Functions:
+     * 
+     * Can be used while running. Does not affect properties
+     */
+
     public void setVel(Vector3 velocity)
     {
         vel = velocity;
@@ -142,6 +161,10 @@ public abstract class DetObject
         moi = getMoI(ang);
         angleMom = moi * ang;
     }
+
+    /*
+     * Trig Functions
+     */
 
     public void cacheTrig()
     {

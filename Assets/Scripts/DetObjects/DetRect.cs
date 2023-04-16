@@ -60,7 +60,6 @@ public class DetRect : DetObjectHoldable
 		l = rectProps.length;
 		calcDimensions();
         setScale();
-        //gameObj.GetComponent<MeshFilter>().mesh = createMesh();
     }
 
     public void modifyWidth(float width)
@@ -74,7 +73,6 @@ public class DetRect : DetObjectHoldable
         w = rectProps.width;
         calcDimensions();
         setScale();
-        //gameObj.GetComponent<MeshFilter>().mesh = createMesh();
     }
 
     public void modifyHeight(float height)
@@ -88,7 +86,6 @@ public class DetRect : DetObjectHoldable
         h = rectProps.height;
         calcDimensions();
         setScale();
-        //gameObj.GetComponent<MeshFilter>().mesh = createMesh();
     }
 
 	private void calcDimensions()
@@ -146,7 +143,6 @@ public class DetRect : DetObjectHoldable
         h = rectProps.height;
         calcDimensions();
         setScale();
-        //gameObj.GetComponent<MeshFilter>().mesh = createMesh();
         base.resetValues();
     }
 
