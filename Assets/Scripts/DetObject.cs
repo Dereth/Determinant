@@ -58,7 +58,7 @@ public abstract class DetObject
         }
     }
 
-    public static void removeObject(DetObject obj)
+    public static void removeObject(DetObjectHoldable obj)
     {
         if (objects.Contains(obj))
         {
@@ -96,7 +96,7 @@ public abstract class DetObject
     {
         if (mass <= 0)
         {
-            throw new Exception("mass must be greater than 0");
+            throw new Exception("Mass must be greater than 0");
         }
         props.mass = mass;
         momentum = mass * this.vel;

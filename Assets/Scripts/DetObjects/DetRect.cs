@@ -53,7 +53,7 @@ public class DetRect : DetObjectHoldable
     {
         if (length <= 0)
         {
-            throw new Exception("length must be greater than 0");
+            throw new Exception("Length must be greater than 0");
         }
         DetRectProps rectProps = (DetRectProps) props;
         rectProps.length = length;
@@ -66,7 +66,7 @@ public class DetRect : DetObjectHoldable
     {
         if (width <= 0)
         {
-            throw new Exception("width must be greater than 0");
+            throw new Exception("Width must be greater than 0");
         }
         DetRectProps rectProps = (DetRectProps) props;
         rectProps.width = width;
@@ -79,7 +79,7 @@ public class DetRect : DetObjectHoldable
     {
         if (height <= 0)
         {
-            throw new Exception("height must be greater than 0");
+            throw new Exception("Height must be greater than 0");
         }
         DetRectProps rectProps = (DetRectProps) props;
         rectProps.height = height;

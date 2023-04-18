@@ -21,7 +21,7 @@ public class DetSphere : DetObjectHoldable
     {
         if (radius <= 0)
         {
-            throw new Exception("radius must be greater than 0");
+            throw new Exception("Radius must be greater than 0");
         }
         DetSphereProps sphereProps = (DetSphereProps) props;
         sphereProps.radius = radius;
