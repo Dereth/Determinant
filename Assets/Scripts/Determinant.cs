@@ -14,6 +14,7 @@ public class Determinant : MonoBehaviour
     public static DetHand rightHand;
     public static DetHand leftHand;
     public static DetGround ground;
+    public static float gravity = 9.81F;
 
     public static Determinant Instance { get; private set; }
 
@@ -21,8 +22,6 @@ public class Determinant : MonoBehaviour
     public bool spacePressed = false;
     public bool rPressed = false;
     public bool rightClicking = false;
-
-    public static float gravity = 9.81F;
 
     void Start()
     {

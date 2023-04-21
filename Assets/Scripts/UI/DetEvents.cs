@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class DetEvents : MonoBehaviour
 {
 
+    public static GameObject test;
     public static DetObject selected = null;
     public static List<GameObject> allDisplays = new List<GameObject>();
     public static bool canModify = true;
