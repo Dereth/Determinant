@@ -48,7 +48,9 @@ public class DetWorld : MonoBehaviour
             }
         }
 
-        foreach(DetObjectHoldable obj in objects)
+        Determinant.leftHand.tick(dt);
+        Determinant.rightHand.tick(dt);
+        foreach (DetObjectHoldable obj in objects)
         {
             if (!obj.isUnstoppable())
             {

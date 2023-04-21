@@ -3,7 +3,10 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - VR_right
+  - VR_left
+  - VR_head
   layers:
   - Default
   - TransparentFX
