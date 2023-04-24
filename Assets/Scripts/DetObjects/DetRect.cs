@@ -152,11 +152,6 @@ public class DetRect : DetObjectHoldable
         calcHitbox();
     }
 
-    public override void tick(float dt)
-    {
-        base.tick(dt);
-    }
-
     public override bool tryClick(Vector3 dir, float dt)
     {
         if (!props.unstoppable && canClick())

@@ -72,28 +72,24 @@ public class VRPositioning
     public static Vector3 rightPos()
     {
         Vector3 pos = GameObject.FindGameObjectWithTag("VR_right").transform.position;
-        Debug.Log("VR_right position" + pos);
         return pos;
     }
 
     public static Vector3 leftPos()
     {
         Vector3 pos = GameObject.FindGameObjectWithTag("VR_left").transform.position;
-        Debug.Log("VR_left position" + pos);
         return pos;
     }
 
     public static Quaternion rightRot()
     {
         Quaternion rot = GameObject.FindGameObjectWithTag("VR_right").transform.rotation;
-        Debug.Log("VR_right rotation" + rot);
         return rot;
     }
 
     public static Quaternion leftRot()
     {
         Quaternion rot = GameObject.FindGameObjectWithTag("VR_left").transform.rotation;
-        Debug.Log("VR_left rotation" + rot);
         return rot;
     }
 }

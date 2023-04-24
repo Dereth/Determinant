@@ -7,6 +7,7 @@ public abstract class DetObjectHoldable : DetObjectRendered
 {
 
     public DetHand hand { get; set; }
+    public float handDist = 0;
 
     public DetObjectHoldable(DetProps props) : base(props)
     {

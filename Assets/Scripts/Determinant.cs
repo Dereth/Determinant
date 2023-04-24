@@ -55,83 +55,24 @@ public class Determinant : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.Space))
+        if (!running)
         {
-            if (!spacePressed)
-            {
-                if (usingCamera)
-                {
-                    if (running)
-                    {
-                        pause();
-                        running = false;
-                    }
-                    else
-                    {
-                        unpause();
-                        running = true;
-                        DetEvents.setCanModify(false);
-                    }
-                }
-            }
-            spacePressed = true;
-        }
-        else
-        {
-            spacePressed = false;
-        }
-
-        if (Input.GetKey(KeyCode.R))
-        {
-            if (!rPressed)
-            {
-                if (usingCamera)
-                {
-                    if (running)
-                    {
-                        pause();
-                        resetObjects();
-                        unpause();
-                    }
-                    else
-                    {
-                        resetObjects();
-                        DetEvents.setCanModify(true);
-                    }
-                }
-            }
-            rPressed = true;
-        }
-        else
-        {
-            rPressed = false;
-        }
-
-        if (Input.GetMouseButtonDown(1))
-        {
-            if (!rightClicking)
-            {
-                usingCamera = !usingCamera;
-            }
-            rightClicking = true;
-        }
-        else
-        {
-            rightClicking = false;
+            rightHand.updatePositioning();
+            leftHand.updatePositioning();
         }
     }
 
     public void pause()
     {
+        running = false;
         Destroy(world);
-        Paused.Instance.SetActive(true); // Allowed to modify
     }
 
     public void unpause()
     {
+        running = true;
         world = new GameObject("DetWorld");
         world.AddComponent<DetWorld>();
-        Paused.Instance.SetActive(false); // Allowed to modify
     }
 
     public static void resetObjects()

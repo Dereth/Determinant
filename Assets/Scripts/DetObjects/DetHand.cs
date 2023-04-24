@@ -5,7 +5,7 @@ using UnityEngine;
 public class DetHand : DetObjectRendered
 {
 
-    public const float RADIUS = 0.25F;
+    public const float RADIUS = 0.12F;
     public static Material holdingMat = Resources.Load("Ground_Mat", typeof(Material)) as Material;
     public static Material notHoldingMat = Resources.Load("Stud_Mat", typeof(Material)) as Material;
 
@@ -18,7 +18,7 @@ public class DetHand : DetObjectRendered
         holding = false;
 
         // Create renderer
-        gameObj.transform.localScale = new Vector3(RADIUS, RADIUS, RADIUS);
+        gameObj.transform.localScale = new Vector3(RADIUS * 2, RADIUS * 2, RADIUS * 2);
         gameObj.AddComponent<MeshFilter>().mesh = Determinant.sphereMesh;
         gameObj.GetComponent<Renderer>().material = notHoldingMat;
     }
@@ -30,6 +30,21 @@ public class DetHand : DetObjectRendered
         bool readHolding = rightHand ? VRPositioning.rightHeld() : VRPositioning.leftHeld();
         Vector3 readPos = rightHand ? VRPositioning.rightPos() : VRPositioning.leftPos();
         Quaternion readRot = rightHand ? VRPositioning.rightRot() : VRPositioning.leftRot();
+
+        // Grabs changes in position;
+        Vector3 newVel = (readPos - pos) / dt;
+        Quaternion deltaRot = (readRot * Quaternion.Inverse(rot));
+
+        // Calculates angular momentum
+        float magnitude = 0.0F;
+        Vector3 axis = Vector3.zero;
+        deltaRot.ToAngleAxis(out magnitude, out axis);
+        magnitude /= dt;
+        Vector3 newAng = axis.normalized * magnitude * DetMath.DEG_TO_RAD;
+
+        // Sets values
+        setVel(newVel);
+        setAng(newAng);
 
         if (readHolding)
         {
@@ -49,44 +64,46 @@ public class DetHand : DetObjectRendered
                 holding = true;
             }
 
-            // Grabs changes in position;
-            Vector3 newVel = (readPos - pos) / dt;
-            Quaternion deltaRot = (readRot * Quaternion.Inverse(rot));
-
-            // Calculates angular momentum
-            float magnitude = 0.0F;
-            Vector3 axis = Vector3.zero;
-            deltaRot.ToAngleAxis(out magnitude, out axis);
-            magnitude /= dt;
-            Vector3 newAng = axis.normalized * magnitude;
-
-            // Sets values
-            setVel(newVel);
-            setAng(newAng);
-
             // Calculates and sets values for held objects
             foreach (DetObjectHoldable obj in heldObjects)
             {
                 Vector3 dist = obj.pos - pos;
-                obj.setVel(getVelAtPoint(dist));
+                Vector3 newPos = readPos + (deltaRot * dist);
+                obj.setVel((newPos - obj.pos) / dt);
                 obj.setAng(newAng);
             }
 
         }
         else if (holding)
         {
-            // Sets material to not holding
-            gameObj.GetComponent<Renderer>().material = notHoldingMat;
-
-            // Clears Held Objects
-            foreach (DetObjectHoldable obj in heldObjects)
-            {
-                obj.hand = null;
-            }
-            heldObjects.Clear();
-            holding = false;
+            clearHolding();
         }
 
+        pos = readPos;
+        rot = readRot;
+
+    }
+
+    public void updatePositioning()
+    {
+        bool rightHand = ((DetHandProps)props).isRightHand();
+        pos = rightHand ? VRPositioning.rightPos() : VRPositioning.leftPos();
+        rot = rightHand ? VRPositioning.rightRot() : VRPositioning.leftRot();
+        clearHolding();
+    }
+
+    public void clearHolding()
+    {
+        // Sets material to not holding
+        gameObj.GetComponent<Renderer>().material = notHoldingMat;
+
+        // Clears Held Objects
+        foreach (DetObjectHoldable obj in heldObjects)
+        {
+            obj.hand = null;
+        }
+        heldObjects.Clear();
+        holding = false;
     }
 
     public override float getMoI(Vector3 vel)
@@ -94,7 +111,7 @@ public class DetHand : DetObjectRendered
         return 0;
     }
 
-    // Colllision Logic
+    // Collision Logic
     public override float getCollisionRadius()
     {
         return RADIUS;
@@ -214,6 +231,7 @@ public abstract class DetHandProps : DetProps
 
     public DetHandProps() : base()
     {
+        unstoppable = true;
     }
 
     public override DetObject createObject()

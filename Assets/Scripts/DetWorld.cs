@@ -18,7 +18,7 @@ public class DetWorld : MonoBehaviour
         DetCollision collision;
         float dt = Time.deltaTime;
 
-        foreach(DetObject obj in objects)
+        foreach (DetObject obj in objects)
         {
             obj.preTick();
             if (!obj.isUnstoppable())
@@ -48,8 +48,6 @@ public class DetWorld : MonoBehaviour
             }
         }
 
-        Determinant.leftHand.tick(dt);
-        Determinant.rightHand.tick(dt);
         foreach (DetObjectHoldable obj in objects)
         {
             if (!obj.isUnstoppable())

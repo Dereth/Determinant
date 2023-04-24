@@ -3,27 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AddObject : MonoBehaviour
+public class ObjectAdder : MonoBehaviour
 {
-
-    public static AddObject Instance;
 
     private TMPro.TMP_Dropdown dropdown;
 
     void Start()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            Instance = this;
-            dropdown = gameObject.GetComponent<TMPro.TMP_Dropdown>();
-        }
+        dropdown = gameObject.GetComponent<TMPro.TMP_Dropdown>();
+
+        List<string> options = new List<string>();
+        options.Add("Add Object");
+        options.Add("Sphere");
+        options.Add("Rectangular Prism");
+        dropdown.ClearOptions();
+        dropdown.AddOptions(options);
     }
 
-    public void onObjectAdded(int index)
+    void Update()
+    {
+        dropdown.interactable = EventController.canEdit;
+    }
+
+    public void addObject(int index)
     {
         if (index != 0)
         {
@@ -46,7 +48,7 @@ public class AddObject : MonoBehaviour
             }
 
             (props.createObject()).resetValues();
-            ObjectSelector.refreshOptions();
+            EventController.Instance.objectSelector.refreshOptions();
         }
     }
 }

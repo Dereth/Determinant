@@ -2,27 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class EventController : MonoBehaviour
 {
-    public static bool paused = true;
+    public static bool menuOpen = false;
     public static bool canEdit = true;
     public static DetObject selected = null;
 
     public static EventController Instance { get; private set; }
 
-    public GameObject Canvas;
-    public GameObject NoneDisplay;
-    public GameObject GlobalDisplay;
-    public GameObject SphereDisplay;
-    public GameObject RectDisplay;
+    public GameObject canvas;
+    public GameObject pausedMessage;
+    public InvalidInputMessage invalidInputMessage;
 
+    public GameObject noneDisplay;
+    public GameObject globalDisplay;
+    public GameObject sphereDisplay;
+    public GameObject rectDisplay;
+
+    public NewObjectSelector objectSelector;
 
     // Button Values
     public bool pausePressed = false;
     public bool resetPressed = false;
     public bool menuPressed = false;
-
 
     void Start()
     {
@@ -33,7 +37,6 @@ public class EventController : MonoBehaviour
         else
         {
             Instance = this;
-
         }
     }
 
@@ -41,23 +44,21 @@ public class EventController : MonoBehaviour
     {
         if (!pausePressed & updatePauseButton())
         {
-            if (paused)
+            if (!Determinant.running)
             {
                 Determinant.Instance.unpause();
-                paused = false;
                 canEdit = false;
             }
             else
             {
                 Determinant.Instance.pause();
-                paused = true;
             }
         }
 
         if (!resetPressed & updateResetButton())
         {
             Determinant.resetObjects();
-            if (paused)
+            if (!Determinant.running)
             {
                 canEdit = true;
             }
@@ -65,44 +66,54 @@ public class EventController : MonoBehaviour
 
         if (!menuPressed & updateMenuButton())
         {
-
+            menuOpen = !menuOpen;
+            canvas.SetActive(menuOpen);
         }
     }
 
+    // Inputs for button controls
+
     bool updatePauseButton()
     {
-        pausePressed = false;
+        pausePressed = Input.GetKey(KeyCode.Space);
         return pausePressed;
     }
 
     bool updateResetButton()
     {
-        resetPressed = false;
+        resetPressed = Input.GetKey(KeyCode.R);
         return resetPressed;
     }
 
     bool updateMenuButton()
     {
-        menuPressed = false;
+        menuPressed = Input.GetKey(KeyCode.M);
         return menuPressed;
     }
+
+    // Selection Functions
 
     public void select(DetObject obj)
     {
         selected = obj;
-        NoneDisplay.SetActive(false);
-        GlobalDisplay.SetActive(obj == null);
-        SphereDisplay.SetActive(obj is DetSphere);
-        RectDisplay.SetActive(obj is DetRect);
+        noneDisplay.SetActive(false);
+        globalDisplay.SetActive(obj == null);
+        sphereDisplay.SetActive(obj is DetSphere);
+        rectDisplay.SetActive(obj is DetRect);
     }
 
     public void deselect()
     {
         selected = null;
-        NoneDisplay.SetActive(true);
-        GlobalDisplay.SetActive(false);
-        SphereDisplay.SetActive(false);
-        RectDisplay.SetActive(false);
+        noneDisplay.SetActive(true);
+        globalDisplay.SetActive(false);
+        sphereDisplay.SetActive(false);
+        rectDisplay.SetActive(false);
+    }
+
+    public void displayError()
+    {
+        invalidInputMessage.activate(1.5F);
     }
 
     /*
