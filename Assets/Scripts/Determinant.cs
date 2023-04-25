@@ -23,6 +23,11 @@ public class Determinant : MonoBehaviour
     public bool rPressed = false;
     public bool rightClicking = false;
 
+    //VR Controller vars
+    public static List<UnityEngine.XR.InputDevice> inputDevices = new List<UnityEngine.XR.InputDevice>();
+    public static List<UnityEngine.XR.InputDevice> leftDevices = new List<UnityEngine.XR.InputDevice>();
+    public static List<UnityEngine.XR.InputDevice> rightDevices = new List<UnityEngine.XR.InputDevice>();
+
     void Start()
     {
         if (Instance != null && Instance != this)
@@ -55,6 +60,10 @@ public class Determinant : MonoBehaviour
 
     void Update()
     {
+        UnityEngine.XR.InputDevices.GetDevices(inputDevices);
+        UnityEngine.XR.InputDevices.GetDevicesWithRole(UnityEngine.XR.InputDeviceRole.LeftHanded, leftDevices);
+        UnityEngine.XR.InputDevices.GetDevicesWithRole(UnityEngine.XR.InputDeviceRole.RightHanded, rightDevices);
+
         if (!running)
         {
             rightHand.updatePositioning();
