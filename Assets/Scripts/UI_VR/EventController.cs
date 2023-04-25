@@ -67,6 +67,8 @@ public class EventController : MonoBehaviour
         if (!menuPressed & updateMenuButton())
         {
             menuOpen = !menuOpen;
+            canvas.transform.position = GameObject.FindGameObjectWithTag("VR_menu").transform.position;
+            canvas.transform.rotation = GameObject.FindGameObjectWithTag("VR_menu").transform.rotation;
             canvas.SetActive(menuOpen);
         }
     }
