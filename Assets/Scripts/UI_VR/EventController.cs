@@ -13,6 +13,8 @@ public class EventController : MonoBehaviour
     public static EventController Instance { get; private set; }
 
     public GameObject canvas;
+    public GameObject laserL;
+    public GameObject laserR;
     public GameObject pausedMessage;
     public InvalidInputMessage invalidInputMessage;
 
@@ -70,6 +72,8 @@ public class EventController : MonoBehaviour
             canvas.transform.position = GameObject.FindGameObjectWithTag("VR_menu").transform.position;
             canvas.transform.rotation = GameObject.FindGameObjectWithTag("VR_menu").transform.rotation;
             canvas.SetActive(menuOpen);
+            laserL.SetActive(menuOpen);
+            laserR.SetActive(menuOpen);
         }
     }
 
