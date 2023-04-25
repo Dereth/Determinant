@@ -79,14 +79,16 @@ public class EventController : MonoBehaviour
         bool value;
         if (Determinant.leftDevices.Count > 0 && Determinant.leftDevices[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out value) && value)
         {
-            return true;
+            pausePressed = true;
+            return pausePressed;
         }
 
         //VR Controller Right
         bool value2;
         if (Determinant.rightDevices.Count > 0 && Determinant.rightDevices[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out value2) && value2)
         {
-            return true;
+            pausePressed = true;
+            return pausePressed;
         }
 
         //Keyboard
@@ -100,14 +102,16 @@ public class EventController : MonoBehaviour
         bool value;
         if (Determinant.leftDevices.Count > 0 && Determinant.leftDevices[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out value) && value)
         {
-            return true;
+            resetPressed = true;
+            return resetPressed;
         }
 
         //VR Controller Right
         bool value2;
         if (Determinant.rightDevices.Count > 0 && Determinant.rightDevices[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out value2) && value2)
         {
-            return true;
+            resetPressed = true;
+            return resetPressed;
         }
 
         //Keyboard
@@ -121,7 +125,8 @@ public class EventController : MonoBehaviour
         bool value;
         if (Determinant.leftDevices.Count > 0 && Determinant.leftDevices[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.menuButton, out value) && value)
         {
-            return true;
+            menuPressed = true;
+            return menuPressed;
         }
 
         //Keyboard
