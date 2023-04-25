@@ -61,11 +61,27 @@ public class VRPositioning
 
     public static bool rightHeld()
     {
+        //VR ontroller
+        bool value;
+        if (Determinant.rightDevices.Count > 0 && Determinant.rightDevices[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.gripButton, out value) && value)
+        {
+            return true;
+        }
+
+        //Keyboard
         return Input.GetKey(KeyCode.U);
     }
 
     public static bool leftHeld()
     {
+        //VR Controller
+        bool value;
+        if (Determinant.leftDevices.Count > 0 && Determinant.leftDevices[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.gripButton, out value) && value)
+        {
+            return true;
+        }
+
+        //Keyboard
         return Input.GetKey(KeyCode.I);
     }
 

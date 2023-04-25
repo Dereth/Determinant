@@ -75,18 +75,56 @@ public class EventController : MonoBehaviour
 
     bool updatePauseButton()
     {
+        //VR Controller Left
+        bool value;
+        if (Determinant.leftDevices.Count > 0 && Determinant.leftDevices[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out value) && value)
+        {
+            return true;
+        }
+
+        //VR Controller Right
+        bool value2;
+        if (Determinant.rightDevices.Count > 0 && Determinant.rightDevices[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out value2) && value2)
+        {
+            return true;
+        }
+
+        //Keyboard
         pausePressed = Input.GetKey(KeyCode.Space);
         return pausePressed;
     }
 
     bool updateResetButton()
     {
+        //VR Controller Left
+        bool value;
+        if (Determinant.leftDevices.Count > 0 && Determinant.leftDevices[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out value) && value)
+        {
+            return true;
+        }
+
+        //VR Controller Right
+        bool value2;
+        if (Determinant.rightDevices.Count > 0 && Determinant.rightDevices[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out value2) && value2)
+        {
+            return true;
+        }
+
+        //Keyboard
         resetPressed = Input.GetKey(KeyCode.R);
         return resetPressed;
     }
 
     bool updateMenuButton()
     {
+        //VR Controller Left (Menu button only exists on left controller, Right controller's Oculus button will not be used)
+        bool value;
+        if (Determinant.leftDevices.Count > 0 && Determinant.leftDevices[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.menuButton, out value) && value)
+        {
+            return true;
+        }
+
+        //Keyboard
         menuPressed = Input.GetKey(KeyCode.M);
         return menuPressed;
     }
