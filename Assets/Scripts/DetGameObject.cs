@@ -4,16 +4,12 @@ using UnityEngine;
 
 public class DetGameObject : MonoBehaviour
 {
-    public DetObject detObject { get; set; }
 
-    void Start()
-    {
-        
-    }
+    public DetObject detObject { get; set; }
 
     void Update()
     {
-        this.transform.position = detObject.pos;// + detObject.alignVect(new Vector3(0, 0, 0));
+        this.transform.position = detObject.pos;
         this.transform.eulerAngles = detObject.rot.eulerAngles;
     }
 }

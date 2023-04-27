@@ -64,6 +64,7 @@ public abstract class DetObject
         {
             numObjects--;
             objects.Remove(obj);
+            Determinant.destroyGameObject(obj);
         }
     }
 
@@ -427,14 +428,10 @@ public abstract class DetObject
             mCoef = (m1 * m2) / (m1 + m2);
         }
 
-        Debug.Log("iSpd " + iSpd);
-
         float maxFric = -iSpd * mCoef;
         f = Mathf.Min(f * fCoef, maxFric);
 
         force = fricDirection * f;
-
-        Debug.Log("Force: " + force);
 
         coll.obj1.addForce(force, coll.point1, dt, false);
         coll.obj2.addForce(-force, coll.point2, dt, false);

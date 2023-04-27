@@ -7,20 +7,12 @@ using System;
 
 public class ButtonInput : MonoBehaviour
 {
-    public TMPro.TMP_Dropdown input;
+    public Button input;
     public UnityEvent m_UpdateInput;
 
     void Update()
     {
-        if (EventController.canEdit)
-        {
-            input.interactable = true;
-        }
-        else
-        {
-            m_UpdateInput.Invoke();
-            input.interactable = false;
-        }
+        input.interactable = EventController.canEdit;
     }
 
     /*

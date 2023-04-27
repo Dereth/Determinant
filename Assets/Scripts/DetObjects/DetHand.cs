@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DetHand : DetObjectRendered
+public class DetHand : DetObject
 {
 
     public const float RADIUS = 0.12F;
@@ -12,12 +12,18 @@ public class DetHand : DetObjectRendered
     public bool holding { get; private set; }
     public List<DetObjectHoldable> heldObjects;
 
+    // Corresponding GameObject
+    public GameObject gameObj { get; private set; }
+
     public DetHand(DetHandProps props) : base(props)
     {
         heldObjects = new List<DetObjectHoldable>();
         holding = false;
 
-        // Create renderer
+        // Create Object
+        gameObj = new GameObject(props.createName());
+        gameObj.AddComponent<MeshRenderer>().material = props.getRenderMaterial();
+        gameObj.AddComponent<DetHandObject>().detObject = this;
         gameObj.transform.localScale = new Vector3(RADIUS * 2, RADIUS * 2, RADIUS * 2);
         gameObj.AddComponent<MeshFilter>().mesh = Determinant.sphereMesh;
         gameObj.GetComponent<Renderer>().material = notHoldingMat;
@@ -58,6 +64,10 @@ public class DetHand : DetObjectRendered
                     {
                         DetObjectHoldable heldObj = (DetObjectHoldable) obj;
                         heldObjects.Add(heldObj);
+                        if (heldObj.hand != null)
+                        {
+                            heldObj.hand.heldObjects.Remove(heldObj);
+                        }
                         heldObj.hand = this;
                     }
                 }

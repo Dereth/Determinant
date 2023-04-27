@@ -25,6 +25,8 @@ public class EventController : MonoBehaviour
 
     public NewObjectSelector objectSelector;
 
+    public GameObject VRMenu;
+
     // Button Values
     public bool pausePressed = false;
     public bool resetPressed = false;
@@ -39,6 +41,7 @@ public class EventController : MonoBehaviour
         else
         {
             Instance = this;
+            VRMenu = GameObject.FindGameObjectWithTag("VR_menu");
         }
     }
 
@@ -48,11 +51,13 @@ public class EventController : MonoBehaviour
         {
             if (!Determinant.running)
             {
+                pausedMessage.SetActive(false);
                 Determinant.Instance.unpause();
                 canEdit = false;
             }
             else
             {
+                pausedMessage.SetActive(true);
                 Determinant.Instance.pause();
             }
         }
@@ -69,8 +74,8 @@ public class EventController : MonoBehaviour
         if (!menuPressed & updateMenuButton())
         {
             menuOpen = !menuOpen;
-            canvas.transform.position = GameObject.FindGameObjectWithTag("VR_menu").transform.position;
-            canvas.transform.rotation = GameObject.FindGameObjectWithTag("VR_menu").transform.rotation;
+            canvas.transform.position = VRMenu.transform.position;
+            canvas.transform.rotation = VRMenu.transform.rotation;
             canvas.SetActive(menuOpen);
             laserL.SetActive(menuOpen);
             laserR.SetActive(menuOpen);
@@ -175,7 +180,12 @@ public class EventController : MonoBehaviour
     {
         if (selected != null)
         {
+            DetObject toDelete = selected;
             deselect();
+            if (toDelete is DetObjectHoldable)
+            {
+                DetObject.removeObject((DetObjectHoldable) toDelete);
+            }
         }
     }
 

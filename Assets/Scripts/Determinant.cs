@@ -86,9 +86,20 @@ public class Determinant : MonoBehaviour
 
     public static void resetObjects()
     {
-        foreach (DetObject obj in DetObject.objects)
+        foreach (DetObjectHoldable obj in DetObject.objects)
         {
-            obj.resetValues();
+            if (obj.hand == null)
+            {
+                obj.resetValues();
+            }
+        }
+    }
+
+    public static void destroyGameObject(DetObject obj)
+    {
+        if (obj is DetObjectRendered)
+        {
+            Destroy(((DetObjectRendered)obj).gameObj);
         }
     }
 

@@ -9,6 +9,7 @@ public class NumberInput : MonoBehaviour
 {
 
     public static TMPro.TMP_InputField selected = null;
+    private static TouchScreenKeyboard keyboard;
 
     public TMPro.TMP_InputField input;
     public UnityEvent m_UpdateInput;
@@ -26,6 +27,7 @@ public class NumberInput : MonoBehaviour
     {
         deselect();
         selected = input;
+        keyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.NumberPad);
     }
 
     public static void deselect()
@@ -573,7 +575,7 @@ public class NumberInput : MonoBehaviour
             }
             else
             {
-                DetProps.fCoefs[1, 1] = parsed;
+                DetProps.fCoefs[0, 0] = parsed;
             }
         }
         catch (Exception)
@@ -585,12 +587,98 @@ public class NumberInput : MonoBehaviour
 
     public void setTo1on1Friction()
     {
-        input.text = DetProps.fCoefs[1, 1].ToString();
+        input.text = DetProps.fCoefs[0, 0].ToString();
     }
 
     // 1 on 2 Friction
 
     public void set1on2Friction(string f)
+    {
+        try
+        {
+            float parsed = float.Parse(f);
+            if (parsed < 0)
+            {
+                EventController.Instance.displayError();
+            }
+            else
+            {
+                DetProps.fCoefs[0, 1] = parsed;
+                DetProps.fCoefs[1, 0] = parsed;
+            }
+        }
+        catch (Exception)
+        {
+            EventController.Instance.displayError();
+        }
+        m_UpdateInput.Invoke();
+    }
+
+    public void setTo1on2Friction()
+    {
+        input.text = DetProps.fCoefs[0, 1].ToString();
+    }
+
+    // 1 on 3 Friction
+
+    public void set1on3Friction(string f)
+    {
+        try
+        {
+            float parsed = float.Parse(f);
+            if (parsed < 0)
+            {
+                EventController.Instance.displayError();
+            }
+            else
+            {
+                DetProps.fCoefs[0, 2] = parsed;
+                DetProps.fCoefs[2, 0] = parsed;
+            }
+        }
+        catch (Exception)
+        {
+            EventController.Instance.displayError();
+        }
+        m_UpdateInput.Invoke();
+    }
+
+    public void setTo1on3Friction()
+    {
+        input.text = DetProps.fCoefs[0, 2].ToString();
+    }
+
+    // 2 on 2 Friction
+
+    public void set2on2Friction(string f)
+    {
+        try
+        {
+            float parsed = float.Parse(f);
+            if (parsed < 0)
+            {
+                EventController.Instance.displayError();
+            }
+            else
+            {
+                DetProps.fCoefs[1, 1] = parsed;
+            }
+        }
+        catch (Exception)
+        {
+            EventController.Instance.displayError();
+        }
+        m_UpdateInput.Invoke();
+    }
+
+    public void setTo2on2Friction()
+    {
+        input.text = DetProps.fCoefs[1, 1].ToString();
+    }
+
+    // 2 on 3 Friction
+
+    public void set2on3Friction(string f)
     {
         try
         {
@@ -612,43 +700,14 @@ public class NumberInput : MonoBehaviour
         m_UpdateInput.Invoke();
     }
 
-    public void setTo1on2Friction()
+    public void setTo2on3Friction()
     {
         input.text = DetProps.fCoefs[1, 2].ToString();
     }
 
-    // 1 on 3 Friction
+    // 3 on 3 Friction
 
-    public void set1on3Friction(string f)
-    {
-        try
-        {
-            float parsed = float.Parse(f);
-            if (parsed < 0)
-            {
-                EventController.Instance.displayError();
-            }
-            else
-            {
-                DetProps.fCoefs[1, 3] = parsed;
-                DetProps.fCoefs[3, 1] = parsed;
-            }
-        }
-        catch (Exception)
-        {
-            EventController.Instance.displayError();
-        }
-        m_UpdateInput.Invoke();
-    }
-
-    public void setTo1on3Friction()
-    {
-        input.text = DetProps.fCoefs[1, 3].ToString();
-    }
-
-    // 2 on 2 Friction
-
-    public void set2on2Friction(string f)
+    public void set3on3Friction(string f)
     {
         try
         {
@@ -669,71 +728,100 @@ public class NumberInput : MonoBehaviour
         m_UpdateInput.Invoke();
     }
 
-    public void setTo2on2Friction()
-    {
-        input.text = DetProps.fCoefs[2, 2].ToString();
-    }
-
-    // 2 on 3 Friction
-
-    public void set2on3Friction(string f)
-    {
-        try
-        {
-            float parsed = float.Parse(f);
-            if (parsed < 0)
-            {
-                EventController.Instance.displayError();
-            }
-            else
-            {
-                DetProps.fCoefs[2, 3] = parsed;
-                DetProps.fCoefs[3, 2] = parsed;
-            }
-        }
-        catch (Exception)
-        {
-            EventController.Instance.displayError();
-        }
-        m_UpdateInput.Invoke();
-    }
-
-    public void setTo2on3Friction()
-    {
-        input.text = DetProps.fCoefs[2, 3].ToString();
-    }
-
-    // 3 on 3 Friction
-
-    public void set3on3Friction(string f)
-    {
-        try
-        {
-            float parsed = float.Parse(f);
-            if (parsed < 0)
-            {
-                EventController.Instance.displayError();
-            }
-            else
-            {
-                DetProps.fCoefs[3, 3] = parsed;
-            }
-        }
-        catch (Exception)
-        {
-            EventController.Instance.displayError();
-        }
-        m_UpdateInput.Invoke();
-    }
-
     public void setTo3on3Friction()
     {
-        input.text = DetProps.fCoefs[3, 3].ToString();
+        input.text = DetProps.fCoefs[2, 2].ToString();
     }
 
     // 1 on 1 Restitution
 
     public void set1on1Restitution(string r)
+    {
+        try
+        {
+            float parsed = float.Parse(r);
+            if (parsed < 0)
+            {
+                EventController.Instance.displayError();
+            }
+            else
+            {
+                DetProps.rCoefs[0, 0] = parsed;
+            }
+        }
+        catch (Exception)
+        {
+            EventController.Instance.displayError();
+        }
+        m_UpdateInput.Invoke();
+    }
+
+    public void setTo1on1Restitution()
+    {
+        input.text = DetProps.rCoefs[0, 0].ToString();
+    }
+
+    // 1 on 2 Restitution
+
+    public void set1on2Restitution(string r)
+    {
+        try
+        {
+            float parsed = float.Parse(r);
+            if (parsed < 0)
+            {
+                EventController.Instance.displayError();
+            }
+            else
+            {
+                DetProps.rCoefs[0, 1] = parsed;
+                DetProps.rCoefs[1, 0] = parsed;
+            }
+        }
+        catch (Exception)
+        {
+            EventController.Instance.displayError();
+        }
+        m_UpdateInput.Invoke();
+    }
+
+    public void setTo1on2Restitution()
+    {
+        input.text = DetProps.rCoefs[0, 1].ToString();
+    }
+
+    // 1 on 3 Restitution
+
+    public void set1on3Restitution(string r)
+    {
+        try
+        {
+            float parsed = float.Parse(r);
+            if (parsed < 0)
+            {
+                EventController.Instance.displayError();
+            }
+            else
+            {
+                DetProps.rCoefs[0, 2] = parsed;
+                DetProps.rCoefs[2, 0] = parsed;
+            }
+        }
+        catch (Exception)
+        {
+            EventController.Instance.displayError();
+        }
+        m_UpdateInput.Invoke();
+    }
+
+    public void setTo1on3Restitution()
+    {
+        input.text = DetProps.rCoefs[0, 2].ToString();
+    }
+
+    // 2 on 2 Restitution
+
+    public void set2on2Restitution(string r)
     {
         try
         {
@@ -754,14 +842,14 @@ public class NumberInput : MonoBehaviour
         m_UpdateInput.Invoke();
     }
 
-    public void setTo1on1Restitution()
+    public void setTo2on2Restitution()
     {
         input.text = DetProps.rCoefs[1, 1].ToString();
     }
 
-    // 1 on 2 Restitution
+    // 2 on 3 Restitution
 
-    public void set1on2Restitution(string r)
+    public void set2on3Restitution(string r)
     {
         try
         {
@@ -783,43 +871,14 @@ public class NumberInput : MonoBehaviour
         m_UpdateInput.Invoke();
     }
 
-    public void setTo1on2Restitution()
+    public void setTo2on3Restitution()
     {
         input.text = DetProps.rCoefs[1, 2].ToString();
     }
 
-    // 1 on 3 Restitution
+    // 3 on 3 Restitution
 
-    public void set1on3Restitution(string r)
-    {
-        try
-        {
-            float parsed = float.Parse(r);
-            if (parsed < 0)
-            {
-                EventController.Instance.displayError();
-            }
-            else
-            {
-                DetProps.rCoefs[1, 3] = parsed;
-                DetProps.rCoefs[3, 1] = parsed;
-            }
-        }
-        catch (Exception)
-        {
-            EventController.Instance.displayError();
-        }
-        m_UpdateInput.Invoke();
-    }
-
-    public void setTo1on3Restitution()
-    {
-        input.text = DetProps.rCoefs[1, 3].ToString();
-    }
-
-    // 2 on 2 Restitution
-
-    public void set2on2Restitution(string r)
+    public void set3on3Restitution(string r)
     {
         try
         {
@@ -840,65 +899,8 @@ public class NumberInput : MonoBehaviour
         m_UpdateInput.Invoke();
     }
 
-    public void setTo2on2Restitution()
-    {
-        input.text = DetProps.rCoefs[2, 2].ToString();
-    }
-
-    // 2 on 3 Restitution
-
-    public void set2on3Restitution(string r)
-    {
-        try
-        {
-            float parsed = float.Parse(r);
-            if (parsed < 0)
-            {
-                EventController.Instance.displayError();
-            }
-            else
-            {
-                DetProps.rCoefs[2, 3] = parsed;
-                DetProps.rCoefs[3, 2] = parsed;
-            }
-        }
-        catch (Exception)
-        {
-            EventController.Instance.displayError();
-        }
-        m_UpdateInput.Invoke();
-    }
-
-    public void setTo2on3Restitution()
-    {
-        input.text = DetProps.rCoefs[2, 3].ToString();
-    }
-
-    // 3 on 3 Restitution
-
-    public void set3on3Restitution(string r)
-    {
-        try
-        {
-            float parsed = float.Parse(r);
-            if (parsed < 0)
-            {
-                EventController.Instance.displayError();
-            }
-            else
-            {
-                DetProps.rCoefs[3, 3] = parsed;
-            }
-        }
-        catch (Exception)
-        {
-            EventController.Instance.displayError();
-        }
-        m_UpdateInput.Invoke();
-    }
-
     public void setTo3on3Restitution()
     {
-        input.text = DetProps.rCoefs[3, 3].ToString();
+        input.text = DetProps.rCoefs[2, 2].ToString();
     }
 }

@@ -37,7 +37,7 @@ public class ObjectAdder : MonoBehaviour
             {
                 case 1:
                     props = new DetSphereProps();
-                    props.position = new Vector3(0, 1F, 0);
+                    props.position = new Vector3(0, 0.5F, 0);
                     break;
                 case 2:
                     props = new DetRectProps();

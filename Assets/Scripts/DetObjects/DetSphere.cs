@@ -181,7 +181,7 @@ public class DetSphereProps : DetProps
 
     public DetSphereProps() : base()
     {
-        radius = 1;
+        radius = 0.5F;
     }
 
     public override DetObject createObject()
