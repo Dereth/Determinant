@@ -27,7 +27,8 @@ public class NumberInput : MonoBehaviour
     {
         deselect();
         selected = input;
-        keyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.NumberPad);
+        keyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default);
+        Debug.Log(keyboard.active);
     }
 
     public static void deselect()
