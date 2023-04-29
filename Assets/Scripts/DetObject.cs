@@ -365,7 +365,7 @@ public abstract class DetObject
         Vector3 RelVel = coll.obj1.getVelAtPoint(coll.point1)
             - coll.obj2.getVelAtPoint(coll.point2);
 
-        // Get the value of the initail velocity (Will be negative if objects are moving towards each other)
+        // Get the value of the initial velocity (Will be negative if objects are moving towards each other)
         float iSpd = Vector3.Dot(RelVel, coll.direction);
 
         if (iSpd > 0)
