@@ -299,7 +299,7 @@ public abstract class DetObject
 
     public virtual void addForce(Vector3 force, Vector3 location, float dt, bool couldClick)
     {
-        if (!props.unstoppable)
+        if (!isUnstoppable())
         {
             momentum += force;
             vel = momentum / props.mass;

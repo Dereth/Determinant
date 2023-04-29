@@ -6,8 +6,8 @@ public class DetHand : DetObject
 {
 
     public const float RADIUS = 0.12F;
-    public static Material holdingMat = Resources.Load("Ground_Mat", typeof(Material)) as Material;
-    public static Material notHoldingMat = Resources.Load("Stud_Mat", typeof(Material)) as Material;
+    public static Material holdingMat = Resources.Load("Holding_Mat", typeof(Material)) as Material;
+    public static Material notHoldingMat = Resources.Load("Not_Holding_Mat", typeof(Material)) as Material;
 
     public bool holding { get; private set; }
     public List<DetObjectHoldable> heldObjects;
