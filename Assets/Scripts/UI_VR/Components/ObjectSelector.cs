@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class NewObjectSelector : MonoBehaviour
+public class ObjectSelector : MonoBehaviour
 {
 
 	private TMPro.TMP_Dropdown dropdown;

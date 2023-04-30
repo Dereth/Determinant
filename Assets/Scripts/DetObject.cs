@@ -301,14 +301,17 @@ public abstract class DetObject
     {
         if (!isUnstoppable())
         {
+            // Change Momentum
             momentum += force;
             vel = momentum / props.mass;
+            // Change Angular momentum
             Vector3 angleMomDiff = Vector3.Cross(location, force);
             angleMom += angleMomDiff;
             moi = getMoI(angleMom);
             Vector3 oldAng = ang;
             ang = moi == 0 ? new Vector3(0, 0, 0) : angleMom / moi;
 
+            // Calculate jitterfixing
             float torqueMoi = getMoI(angleMomDiff);
             float angAcc = torqueMoi == 0 ? 0 : angleMomDiff.magnitude / torqueMoi;
             if (couldClick)
@@ -368,6 +371,7 @@ public abstract class DetObject
         // Get the value of the initial velocity (Will be negative if objects are moving towards each other)
         float iSpd = Vector3.Dot(RelVel, coll.direction);
 
+        // Ignore if moving away from each other
         if (iSpd > 0)
         {
             iSpd = 0;
@@ -392,6 +396,7 @@ public abstract class DetObject
 
         }
 
+        // Calculate Mass Coefficient
         if (mainObj != null)
         {
             mCoef = mainObj.getCollMass(mainPoint, mainDir);
@@ -403,17 +408,18 @@ public abstract class DetObject
             mCoef = (m1 * m2) / (m1 + m2);
         }
 
+        // Create main force & magnitude
         float f = (fSpd - iSpd) * mCoef;
-
         Vector3 force = coll.direction * f;
 
+        // Adds force to objects
         coll.obj1.addForce(force, coll.point1, dt, true);
         coll.obj2.addForce(-force, coll.point2, dt, true);
 
+        // Recreate values for friction calculations
         RelVel = coll.obj1.getVelAtPoint(coll.point1)
             - coll.obj2.getVelAtPoint(coll.point2);
 
-        //RelVel = RelVel - (coll.direction * Vector3.Dot(RelVel, coll.direction));
         Vector3 fricDirection = -(RelVel - (coll.direction * Vector3.Dot(RelVel, coll.direction))).normalized;
         iSpd = Vector3.Dot(RelVel, fricDirection);
 

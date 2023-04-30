@@ -9,7 +9,6 @@ public class NumberInput : MonoBehaviour
 {
 
     public static TMPro.TMP_InputField selected = null;
-    private static TouchScreenKeyboard keyboard;
 
     public TMPro.TMP_InputField input;
     public UnityEvent m_UpdateInput;
@@ -17,7 +16,11 @@ public class NumberInput : MonoBehaviour
     void Update()
     {
         input.interactable = EventController.canEdit;
-        if (selected != input)
+        if (NumpadButton.typing && input == NumpadButton.previous)
+        {
+            input.text = NumpadButton.value;
+        }
+        else if (input != selected)
         {
             m_UpdateInput.Invoke();
         }
@@ -27,8 +30,8 @@ public class NumberInput : MonoBehaviour
     {
         deselect();
         selected = input;
-        keyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default);
-        Debug.Log(keyboard.active);
+        NumpadButton.resetInput();
+        NumpadButton.previous = input;
     }
 
     public static void deselect()

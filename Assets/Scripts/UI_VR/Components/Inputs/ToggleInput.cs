@@ -10,7 +10,6 @@ public class ToggleInput : MonoBehaviour
     public Toggle input;
     public UnityEvent m_UpdateInput;
 
-    private DetObject prevObj = null;
     void Update()
     {
         input.interactable = EventController.canEdit;

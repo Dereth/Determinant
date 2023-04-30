@@ -6,6 +6,7 @@ using System;
 
 public class EventController : MonoBehaviour
 {
+
     public static bool menuOpen = false;
     public static bool canEdit = true;
     public static DetObject selected = null;
@@ -23,7 +24,8 @@ public class EventController : MonoBehaviour
     public GameObject sphereDisplay;
     public GameObject rectDisplay;
 
-    public NewObjectSelector objectSelector;
+    public ObjectSelector objectSelector;
+    public NumpadController numpadController;
 
     public GameObject VRMenu;
 
@@ -154,6 +156,7 @@ public class EventController : MonoBehaviour
         globalDisplay.SetActive(obj == null);
         sphereDisplay.SetActive(obj is DetSphere);
         rectDisplay.SetActive(obj is DetRect);
+        NumpadButton.resetInput();
     }
 
     public void deselect()
@@ -163,6 +166,7 @@ public class EventController : MonoBehaviour
         globalDisplay.SetActive(false);
         sphereDisplay.SetActive(false);
         rectDisplay.SetActive(false);
+        NumpadButton.resetInput();
     }
 
     public void displayError()
