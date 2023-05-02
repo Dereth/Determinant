@@ -37,7 +37,7 @@ public class NumpadButton : MonoBehaviour
             {
                 len = 2;
                 dec = 2;
-                value = "0.";
+                value += "0.";
             }
             else if (len < 9 && dec == 0)
             {
