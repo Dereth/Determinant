@@ -189,6 +189,7 @@ public class EventController : MonoBehaviour
             if (toDelete is DetObjectHoldable)
             {
                 DetObject.removeObject((DetObjectHoldable) toDelete);
+                objectSelector.refreshOptions();
             }
         }
     }

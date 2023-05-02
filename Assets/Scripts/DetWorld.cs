@@ -23,6 +23,8 @@ public class DetWorld : MonoBehaviour
             obj.preTick();
             if (!obj.isUnstoppable())
             {
+                // Applies twice due to a legacy change. Just applies gravity.
+                obj.applyHalfGravity(dt);
                 obj.applyHalfGravity(dt);
             }
         }
@@ -71,9 +73,6 @@ public class DetWorld : MonoBehaviour
                         DetObject.resolveCollision(collision, dt);
                     }
                 }
-
-                // Final Gravity Application
-                obj.applyHalfGravity(dt);
 
                 // Ground Collision
                 collision = Determinant.ground.getCollision(obj);
